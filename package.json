@@ -1,0 +1,12 @@
+{
+  "name": "CodeForge",
+  "version": "1.0.0",
+  "description": "O CodeForge é uma biblioteca desenvolvida em JavaScript focada na geração automatizada de código a partir de templates e arquivos de configuração .config. Seu objetivo é acelerar o desenvolvimento de aplicações, padronizar estruturas de projeto e reduzir tarefas repetitivas através de um sistema flexível e extensível de geração de código.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
