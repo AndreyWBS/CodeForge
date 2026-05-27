@@ -11,6 +11,7 @@ export class ProjectConfigLoader {
       outputDir: path.resolve(cwd, config.output ?? "./dist"),
       templateDir: path.resolve(cwd, config.template),
       keepPluginDependencies: config.keepPluginDependencies ?? false,
+      projectConfig: config,
     };
   }
 }

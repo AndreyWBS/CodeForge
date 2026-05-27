@@ -1,5 +1,12 @@
 {
   "template": "./template",
   "output": "./dist",
-  "keepPluginDependencies": false
+  "keepPluginDependencies": true,
+  "database": {
+    "host": "localhost",
+    "port": 3306,
+    "user": "root",
+    "password": "@Ndrey1201",
+    "database": "sistema_cartinhas"
+  }
 }

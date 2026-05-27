@@ -7,6 +7,7 @@ import { TemplateRenderer } from "../TemplateRenderer/TemplateRenderer.js";
 import { FileWriter } from "../FileWriter/FileWriter.js";
 import { PackageWriter } from "../PackageWriter/PackageWriter.js";
 import { DependencyInstaller } from "../DependencyInstaller/DependencyInstaller.js";
+import { ConfigValidator } from "../ConfigValidator/ConfigValidator.js";
 
 export class CodeForgeEngine {
   constructor() {
@@ -18,14 +19,20 @@ export class CodeForgeEngine {
     this.renderer = new TemplateRenderer();
     this.writer = new FileWriter();
     this.packageWriter = new PackageWriter();
+    this.configValidator = new ConfigValidator();
   }
 
-  async run(configPath, { outputDir, templateDir, keepPluginDependencies = false } = {}) {
+  async run(
+    configPath,
+    { outputDir, templateDir, keepPluginDependencies = false, projectConfig = {} } = {},
+  ) {
     console.log(`🚀 Iniciando CodeForge... Lendo ${configPath}`);
 
     try {
       const config = await this.configLoader.load(configPath);
       console.log("📦 Contexto Global carregado:", Object.keys(config.globalContext));
+
+      this.configValidator.validate(config.requiredConfig, projectConfig);
 
       const configDir = path.dirname(path.resolve(configPath));
       const resolvedTemplateDir = templateDir ?? configDir;
@@ -34,7 +41,11 @@ export class CodeForgeEngine {
       this.helperRegistry.register();
       await this.partialRegistry.register(configDir);
       await this.dependencyInstaller.install(resolvedTemplateDir);
-      await this.pluginLoader.load(configDir);
+      const enrichedContext = await this.pluginLoader.load(
+        configDir,
+        config.globalContext,
+        projectConfig,
+      );
       if (!keepPluginDependencies) {
         await this.dependencyInstaller.cleanup(resolvedTemplateDir);
       }
@@ -42,7 +53,7 @@ export class CodeForgeEngine {
       for (const fileDef of config.files) {
         const tmplPath = path.resolve(configDir, fileDef.templatePath);
         const outPath = path.resolve(configDir, fileDef.outputPath);
-        const content = await this.renderer.render(tmplPath, config.globalContext);
+        const content = await this.renderer.render(tmplPath, enrichedContext);
         await this.writer.write(outPath, content);
       }
 

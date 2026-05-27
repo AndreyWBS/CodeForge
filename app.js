@@ -14,14 +14,14 @@ program
   .description("Gera o código a partir de um arquivo de configuração")
   .argument("[configPath]", "Caminho para o template.config.json")
   .action(async (configPath) => {
-    let outputDir, templateDir, keepPluginDependencies;
+    let outputDir, templateDir, keepPluginDependencies, projectConfig;
     if (!configPath) {
       const projectLoader = new ProjectConfigLoader();
-      ({ configPath, outputDir, templateDir, keepPluginDependencies } =
+      ({ configPath, outputDir, templateDir, keepPluginDependencies, projectConfig } =
         await projectLoader.resolve());
     }
     const engine = new CodeForgeEngine();
-    engine.run(configPath, { outputDir, templateDir, keepPluginDependencies });
+    engine.run(configPath, { outputDir, templateDir, keepPluginDependencies, projectConfig });
   });
 
 program.parse(process.argv);

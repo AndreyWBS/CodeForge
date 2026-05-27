@@ -13,7 +13,8 @@ export class DependencyInstaller {
     if (Object.keys(pluginDeps).length === 0) return;
 
     console.log("📥 Instalando dependências de plugins:", Object.keys(pluginDeps).join(", "));
-    await this._runNpmInstall(templateDir);
+    const packages = Object.entries(pluginDeps).map(([name, version]) => `${name}@${version}`);
+    await this._runNpmInstall(templateDir, packages);
     console.log("✅ Dependências de plugins instaladas.");
   }
 
@@ -24,9 +25,10 @@ export class DependencyInstaller {
     console.log("🧹 Limpeza concluída: template/node_modules removido.");
   }
 
-  _runNpmInstall(cwd) {
+  _runNpmInstall(cwd, packages = []) {
     return new Promise((resolve, reject) => {
-      const proc = spawn("npm", ["install"], {
+      const args = ["install", ...packages];
+      const proc = spawn("npm", args, {
         cwd,
         shell: true,
         stdio: "inherit",
