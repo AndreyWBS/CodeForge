@@ -10,7 +10,8 @@ export class ProjectConfigLoader {
   async resolve(cwd = process.cwd()) {
     const projectConfigPath = path.join(cwd, "codeForge.config.json");
     const raw = await fs.readFile(projectConfigPath, "utf-8");
-    const config = JSON.parse(raw);
+    const stripped = raw.charCodeAt(0) === 0xfeff ? raw.slice(1) : raw;
+    const config = JSON.parse(stripped);
 
     const templateDir = await this.templateSourceResolver.resolve(cwd, config.template, config);
 
