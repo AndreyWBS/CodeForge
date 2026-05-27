@@ -2,7 +2,29 @@
   "globalContext": {
     "entityName": "User",
     "tableName": "users",
-    "hasCreate": true
+    "hasCreate": true,
+    "metodos": [
+      {
+        "name": "findAll",
+        "description": "Busca todos os Users",
+        "params": []
+      },
+      {
+        "name": "findById",
+        "description": "Busca User por ID",
+        "params": ["id"]
+      },
+      {
+        "name": "create",
+        "description": "Cria um novo User",
+        "params": ["data"]
+      },
+      {
+        "name": "delete",
+        "description": "Remove um User pelo ID",
+        "params": ["id"]
+      }
+    ]
   },
   "files": [
     {

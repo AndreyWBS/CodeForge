@@ -1,13 +1,6 @@
 // Arquivo gerado automaticamente pelo CodeForge
 export class {{entityName}}Controller {
-  
-  async findAll() {
-    console.log("Buscando todos os registros de {{tableName}}...");
-  }
-
-  {{#if hasCreate}}
-  async create() {
-    console.log("Criando registro em {{tableName}}...");
-  }
-  {{/if}}
+{{#each metodos}}
+{{> metodo}}
+{{/each}}
 }
