@@ -1,0 +1,17 @@
+{
+  "globalContext": {
+    "entityName": "User",
+    "tableName": "users",
+    "hasCreate": true
+  },
+  "files": [
+    {
+      "templatePath": "./arquivos/controller.hbs",
+      "outputPath": "../dist/src/UserController.js"
+    },
+    {
+      "templatePath": "./arquivos/app.hbs",
+      "outputPath": "../dist/App.js"
+    }
+  ]
+}
