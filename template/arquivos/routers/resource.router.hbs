@@ -1,0 +1,13 @@
+import { Router } from 'express';
+import { {{toPascalCase tableSchema.name}}Service } from '../services/{{toCamelCase tableSchema.name}}.service.js';
+import { {{toPascalCase tableSchema.name}}Controller } from '../controllers/{{toCamelCase tableSchema.name}}.controller.js';
+
+export function create{{toPascalCase tableSchema.name}}Router() {
+  const router = Router();
+  const service = new {{toPascalCase tableSchema.name}}Service();
+  const controller = new {{toPascalCase tableSchema.name}}Controller(service);
+
+{{> router-crud-routes}}
+
+  return router;
+}

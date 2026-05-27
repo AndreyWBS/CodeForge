@@ -21,12 +21,27 @@ export async function enrichContext(context, projectConfig) {
 
     const dbKey = `Tables_in_${dbConfig.database}`;
     const tables = rows.map((row) => row[dbKey] ?? Object.values(row)[0]);
+    const tableSchemas = [];
+
+    for (const table of tables) {
+      const [columnsRows] = await connection.query(`SHOW COLUMNS FROM \`${table}\``);
+      const [primaryRows] = await connection.query(
+        `SHOW KEYS FROM \`${table}\` WHERE Key_name = 'PRIMARY'`,
+      );
+      const columns = columnsRows.map((column) => column.Field);
+      const primaryKey = primaryRows[0]?.Column_name ?? "id";
+      tableSchemas.push({
+        name: table,
+        primaryKey,
+        columns,
+      });
+    }
 
     console.log("\n📋 Tabelas encontradas no banco de dados:");
     tables.forEach((table) => console.log(`   - ${table}`));
     console.log("");
 
-    return { tables };
+    return { tables, tableSchemas };
   } catch (err) {
     console.error(`❌ db-mapper: falha ao conectar no banco — ${err.message}`);
     return {};

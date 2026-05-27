@@ -51,10 +51,7 @@ export class CodeForgeEngine {
       }
 
       for (const fileDef of config.files) {
-        const tmplPath = path.resolve(configDir, fileDef.templatePath);
-        const outPath = path.resolve(configDir, fileDef.outputPath);
-        const content = await this.renderer.render(tmplPath, enrichedContext);
-        await this.writer.write(outPath, content);
+        await this.generateFromFileDef(fileDef, configDir, enrichedContext);
       }
 
       await this.packageWriter.write(resolvedTemplateDir, resolvedOutputDir);
@@ -63,5 +60,33 @@ export class CodeForgeEngine {
     } catch (error) {
       console.error("❌ Erro na execução:", error.message);
     }
+  }
+
+  async generateFromFileDef(fileDef, configDir, baseContext) {
+    if (fileDef.forEach) {
+      const items = baseContext[fileDef.forEach];
+      if (!Array.isArray(items)) {
+        throw new Error(`forEach '${fileDef.forEach}' precisa ser um array no contexto`);
+      }
+
+      const itemAlias = fileDef.itemAlias ?? "item";
+      for (const item of items) {
+        const itemContext = { ...baseContext, [itemAlias]: item };
+        await this.generateSingleFile(fileDef, configDir, itemContext);
+      }
+      return;
+    }
+
+    await this.generateSingleFile(fileDef, configDir, baseContext);
+  }
+
+  async generateSingleFile(fileDef, configDir, context) {
+    const renderedTemplatePath = this.renderer.renderString(fileDef.templatePath, context);
+    const renderedOutputPath = this.renderer.renderString(fileDef.outputPath, context);
+
+    const tmplPath = path.resolve(configDir, renderedTemplatePath);
+    const outPath = path.resolve(configDir, renderedOutputPath);
+    const content = await this.renderer.render(tmplPath, context);
+    await this.writer.write(outPath, content);
   }
 }

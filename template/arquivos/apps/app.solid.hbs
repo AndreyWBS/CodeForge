@@ -1,0 +1,27 @@
+import express from 'express';
+import { env } from './config/env.js';
+{{#each tableSchemas}}
+{{> app-router-import name=this.name}}
+{{/each}}
+
+const app = express();
+
+app.use(express.json());
+
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok', service: 'crud-solid-api' });
+});
+
+{{#each tableSchemas}}
+{{> app-router-use name=this.name}}
+{{/each}}
+
+app.use((error, req, res, next) => {
+  const statusCode = error.statusCode ?? 500;
+  const message = error.message ?? 'Erro interno do servidor';
+  res.status(statusCode).json({ message });
+});
+
+app.listen(env.port, () => {
+  console.log(`API REST rodando na porta ${env.port}`);
+});

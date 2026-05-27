@@ -1,0 +1,8 @@
+import { BaseService } from './base.service.js';
+import { {{toPascalCase tableSchema.name}}Model } from '../models/{{toCamelCase tableSchema.name}}.model.js';
+
+export class {{toPascalCase tableSchema.name}}Service extends BaseService {
+  constructor(model = new {{toPascalCase tableSchema.name}}Model()) {
+    super(model);
+  }
+}

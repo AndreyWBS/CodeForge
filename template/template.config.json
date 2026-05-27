@@ -5,42 +5,56 @@
   "globalContext": {
     "entityName": "User",
     "tableName": "users",
-    "hasCreate": true,
-    "metodos": [
-      {
-        "name": "findAll",
-        "description": "Busca todos os Users",
-        "params": []
-      },
-      {
-        "name": "findById",
-        "description": "Busca User por ID",
-        "params": ["id"]
-      },
-      {
-        "name": "create",
-        "description": "Cria um novo User",
-        "params": ["data"]
-      },
-      {
-        "name": "delete",
-        "description": "Remove um User pelo ID",
-        "params": ["id"]
-      }
-    ]
+    "hasCreate": true
   },
   "files": [
     {
-      "templatePath": "./arquivos/controller.hbs",
-      "outputPath": "../dist/src/UserController.js"
+      "templatePath": "./arquivos/config/env.hbs",
+      "outputPath": "../dist/src/config/env.js"
     },
     {
-      "templatePath": "./arquivos/app.hbs",
-      "outputPath": "../dist/App.js"
+      "templatePath": "./arquivos/config/env-example.hbs",
+      "outputPath": "../dist/.env.example"
     },
     {
-      "templatePath": "./arquivos/tabelas.hbs",
-      "outputPath": "../dist/tabelas.js"
+      "templatePath": "./arquivos/infra/database/connection.hbs",
+      "outputPath": "../dist/src/infra/database/connection.js"
+    },
+    {
+      "templatePath": "./arquivos/models/base.model.hbs",
+      "outputPath": "../dist/src/models/base.model.js"
+    },
+    {
+      "templatePath": "./arquivos/services/base.service.hbs",
+      "outputPath": "../dist/src/services/base.service.js"
+    },
+    {
+      "templatePath": "./arquivos/models/resource.model.hbs",
+      "outputPath": "../dist/src/models/{{toCamelCase tableSchema.name}}.model.js",
+      "forEach": "tableSchemas",
+      "itemAlias": "tableSchema"
+    },
+    {
+      "templatePath": "./arquivos/services/resource.service.hbs",
+      "outputPath": "../dist/src/services/{{toCamelCase tableSchema.name}}.service.js",
+      "forEach": "tableSchemas",
+      "itemAlias": "tableSchema"
+    },
+    {
+      "templatePath": "./arquivos/controllers/resource.controller.hbs",
+      "outputPath": "../dist/src/controllers/{{toCamelCase tableSchema.name}}.controller.js",
+      "forEach": "tableSchemas",
+      "itemAlias": "tableSchema"
+    },
+    {
+      "templatePath": "./arquivos/routers/resource.router.hbs",
+      "outputPath": "../dist/src/routers/{{toCamelCase tableSchema.name}}.router.js",
+      "forEach": "tableSchemas",
+      "itemAlias": "tableSchema"
+    },
+    {
+      "templatePath": "./arquivos/apps/app.solid.hbs",
+      "outputPath": "../dist/src/app.solid.js"
     }
   ]
 }

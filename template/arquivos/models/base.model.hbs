@@ -1,0 +1,86 @@
+import { db } from '../infra/database/connection.js';
+
+export class BaseModel {
+  constructor(tableName, primaryKey = 'id', searchableColumns = ['id'], connection = db) {
+    this.tableName = tableName;
+    this.primaryKey = primaryKey;
+    this.searchableColumns = searchableColumns;
+    this.connection = connection;
+  }
+
+  async findAll(limit = 100) {
+    const [rows] = await this.connection.query(`SELECT * FROM ${this.tableName} LIMIT ?`, [limit]);
+    return rows;
+  }
+
+  async search(query, limit = 100) {
+    const term = `%${query}%`;
+    const where = this.searchableColumns
+      .map((column) => `${column} LIKE ?`)
+      .join(' OR ');
+
+    const params = this.searchableColumns.map(() => term);
+    const [rows] = await this.connection.query(
+      `SELECT * FROM ${this.tableName} WHERE ${where} LIMIT ?`,
+      [...params, limit],
+    );
+    return rows;
+  }
+
+  async findById(id) {
+    const [rows] = await this.connection.query(
+      `SELECT * FROM ${this.tableName} WHERE ${this.primaryKey} = ? LIMIT 1`,
+      [id],
+    );
+    return rows[0] ?? null;
+  }
+
+  async create(payload) {
+    const entries = Object.entries(payload).filter(([, value]) => value !== undefined);
+    const keys = entries.map(([key]) => key);
+    const values = entries.map(([, value]) => value);
+
+    if (keys.length === 0) {
+      throw new Error(`Nenhum campo informado para criar em ${this.tableName}`);
+    }
+
+    const placeholders = keys.map(() => '?').join(', ');
+    const [result] = await this.connection.query(
+      `INSERT INTO ${this.tableName} (${keys.join(', ')}) VALUES (${placeholders})`,
+      values,
+    );
+
+    const createdId = result.insertId || payload[this.primaryKey];
+    if (!createdId) return payload;
+    return this.findById(createdId);
+  }
+
+  async update(id, payload) {
+    const entries = Object.entries(payload).filter(([key]) => key !== this.primaryKey);
+    const keys = entries.map(([key]) => key);
+    const values = entries.map(([, value]) => value);
+
+    if (keys.length === 0) {
+      return this.findById(id);
+    }
+
+    const setClause = keys.map((key) => `${key} = ?`).join(', ');
+    await this.connection.query(
+      `UPDATE ${this.tableName} SET ${setClause} WHERE ${this.primaryKey} = ?`,
+      [
+      ...values,
+      id,
+      ],
+    );
+
+    return this.findById(id);
+  }
+
+  async remove(id) {
+    const [result] = await this.connection.query(
+      `DELETE FROM ${this.tableName} WHERE ${this.primaryKey} = ?`,
+      [id],
+    );
+    return result.affectedRows > 0;
+  }
+}

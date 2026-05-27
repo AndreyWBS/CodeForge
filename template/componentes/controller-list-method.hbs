@@ -1,0 +1,8 @@
+  async list(req, res, next) {
+    try {
+      const result = await this.service.list(req.query);
+      return res.json(result);
+    } catch (error) {
+      return next(error);
+    }
+  }

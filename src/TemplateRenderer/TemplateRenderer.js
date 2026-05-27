@@ -7,4 +7,9 @@ export class TemplateRenderer {
     const compiled = Handlebars.compile(templateString);
     return compiled(context);
   }
+
+  renderString(template, context) {
+    const compiled = Handlebars.compile(template);
+    return compiled(context);
+  }
 }

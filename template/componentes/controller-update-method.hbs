@@ -1,0 +1,9 @@
+  async update(req, res, next) {
+    try {
+      const result = await this.service.update(req.params.id, req.body);
+      if (!result) return res.status(404).json({ message: 'Registro nao encontrado' });
+      return res.json(result);
+    } catch (error) {
+      return next(error);
+    }
+  }

@@ -1,0 +1,15 @@
+export class {{toPascalCase tableSchema.name}}Controller {
+  constructor(service) {
+    this.service = service;
+  }
+
+{{> controller-list-method}}
+
+{{> controller-get-by-id-method}}
+
+{{> controller-create-method}}
+
+{{> controller-update-method}}
+
+{{> controller-remove-method}}
+}

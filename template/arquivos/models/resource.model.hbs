@@ -1,0 +1,11 @@
+import { BaseModel } from './base.model.js';
+
+export class {{toPascalCase tableSchema.name}}Model extends BaseModel {
+  constructor() {
+    super('{{tableSchema.name}}', '{{tableSchema.primaryKey}}', [
+{{#each tableSchema.columns}}
+      '{{this}}',
+{{/each}}
+    ]);
+  }
+}
