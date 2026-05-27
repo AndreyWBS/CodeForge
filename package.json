@@ -3,9 +3,15 @@
   "version": "1.0.0",
   "description": "O CodeForge é uma biblioteca desenvolvida em JavaScript focada na geração automatizada de código a partir de templates e arquivos de configuração .config.",
   "main": "app.js",
+  "bin": {
+    "codeforge": "./app.js"
+  },
   "type": "module",
   "scripts": {
     "start": "node app.js generate",
+    "cache:list": "node app.js cache:list",
+    "cache:clear": "node app.js cache:clear",
+    "template:create": "node app.js template:create",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

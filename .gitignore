@@ -3,3 +3,4 @@ aa
 /dist
 template/dist
 template/node_modules
+/.codeforge

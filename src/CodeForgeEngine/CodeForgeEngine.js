@@ -30,7 +30,8 @@ export class CodeForgeEngine {
 
     try {
       const config = await this.configLoader.load(configPath);
-      console.log("📦 Contexto Global carregado:", Object.keys(config.globalContext));
+      const globalContext = config.globalContext ?? {};
+      console.log("📦 Contexto Global carregado:", Object.keys(globalContext));
 
       this.configValidator.validate(config.requiredConfig, projectConfig);
 
@@ -46,7 +47,7 @@ export class CodeForgeEngine {
       }
       const enrichedContext = await this.pluginLoader.load(
         configDir,
-        config.globalContext,
+        globalContext,
         projectConfig,
         configuredPlugins,
       );
@@ -55,7 +56,12 @@ export class CodeForgeEngine {
       }
 
       for (const fileDef of config.files) {
-        await this.generateFromFileDef(fileDef, configDir, enrichedContext);
+        await this.generateFromFileDef(
+          fileDef,
+          resolvedTemplateDir,
+          resolvedOutputDir,
+          enrichedContext,
+        );
       }
 
       await this.packageWriter.write(resolvedTemplateDir, resolvedOutputDir);
@@ -66,7 +72,7 @@ export class CodeForgeEngine {
     }
   }
 
-  async generateFromFileDef(fileDef, configDir, baseContext) {
+  async generateFromFileDef(fileDef, templateBaseDir, outputDir, baseContext) {
     if (fileDef.forEach) {
       const items = baseContext[fileDef.forEach];
       if (items === undefined || items === null) {
@@ -83,20 +89,22 @@ export class CodeForgeEngine {
       const itemAlias = fileDef.itemAlias ?? "item";
       for (const item of items) {
         const itemContext = { ...baseContext, [itemAlias]: item };
-        await this.generateSingleFile(fileDef, configDir, itemContext);
+        await this.generateSingleFile(fileDef, templateBaseDir, outputDir, itemContext);
       }
       return;
     }
 
-    await this.generateSingleFile(fileDef, configDir, baseContext);
+    await this.generateSingleFile(fileDef, templateBaseDir, outputDir, baseContext);
   }
 
-  async generateSingleFile(fileDef, configDir, context) {
+  async generateSingleFile(fileDef, templateBaseDir, outputDir, context) {
     const renderedTemplatePath = this.renderer.renderString(fileDef.templatePath, context);
     const renderedOutputPath = this.renderer.renderString(fileDef.outputPath, context);
 
-    const tmplPath = path.resolve(configDir, renderedTemplatePath);
-    const outPath = path.resolve(configDir, renderedOutputPath);
+    const tmplPath = path.resolve(templateBaseDir, renderedTemplatePath);
+    const outPath = path.isAbsolute(renderedOutputPath)
+      ? renderedOutputPath
+      : path.resolve(outputDir, renderedOutputPath);
     const content = await this.renderer.render(tmplPath, context);
     await this.writer.write(outPath, content);
   }

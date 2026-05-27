@@ -1,6 +1,7 @@
 {
-  "template": "./template",
+  "template": "./template-starter",
   "output": "./dist",
+  "projectName": "meu-projeto",
   "keepPluginDependencies": true,
   "database": {
     "host": "localhost",
@@ -17,7 +18,7 @@
         "routes": ["GET /search/by-email => findByEmail", "POST /:id/activate => activate"]
       },
       "categorias": {
-        "steps": ["list"]
+        "steps": ["list, getById, create, update, delete"]
       }
     }
   }

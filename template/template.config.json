@@ -2,11 +2,7 @@
   "requiredConfig": {
     "database": "Configurações de conexão MySQL usadas pelo plugin db-mapper (host, port, user, password, database)"
   },
-  "globalContext": {
-    "entityName": "User",
-    "tableName": "users",
-    "hasCreate": true
-  },
+
   "plugins": [
     {
       "name": "db-schema.js"
