@@ -1,0 +1,14 @@
+{
+  "name": "generated-project",
+  "version": "1.0.0",
+  "dependencies": {
+    "express": "^4.19.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "@types/express": "^4.17.0"
+  },
+  "pluginDependencies": {
+    "mysql2": "^3.9.0"
+  }
+}
