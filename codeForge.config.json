@@ -8,5 +8,17 @@
     "user": "root",
     "password": "@Ndrey1201",
     "database": "sistema_cartinhas"
+  },
+  "api": {
+    "includeTables": ["usuarios", "categorias"],
+    "tables": {
+      "usuarios": {
+        "steps": ["list", "getById"],
+        "routes": ["GET /search/by-email => findByEmail", "POST /:id/activate => activate"]
+      },
+      "categorias": {
+        "steps": ["list"]
+      }
+    }
   }
 }

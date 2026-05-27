@@ -1,11 +1,18 @@
 import { BaseModel } from './base.model.js';
 
-export class {{toPascalCase tableSchema.name}}Model extends BaseModel {
+export class {{toPascalCase resource.name}}Model extends BaseModel {
   constructor() {
-    super('{{tableSchema.name}}', '{{tableSchema.primaryKey}}', [
-{{#each tableSchema.columns}}
+    super('{{resource.name}}', '{{resource.primaryKey}}', [
+{{#each resource.columns}}
       '{{this}}',
 {{/each}}
     ]);
   }
+
+{{#each resource.customRoutes}}
+  async {{handlerName}}(params, query, body) {
+    return this.executeCustomRoute('{{handlerName}}', params, query, body);
+  }
+
+{{/each}}
 }

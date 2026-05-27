@@ -83,4 +83,15 @@ export class BaseModel {
     );
     return result.affectedRows > 0;
   }
+
+  async executeCustomRoute(handlerName, params, query, body) {
+    return {
+      table: this.tableName,
+      handler: handlerName,
+      params,
+      query,
+      body,
+      message: 'Implemente esta rota customizada no model da tabela.',
+    };
+  }
 }

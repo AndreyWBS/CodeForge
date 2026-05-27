@@ -7,6 +7,14 @@
     "tableName": "users",
     "hasCreate": true
   },
+  "plugins": [
+    {
+      "name": "db-schema.js"
+    },
+    {
+      "name": "api-resources.js"
+    }
+  ],
   "files": [
     {
       "templatePath": "./arquivos/config/env.hbs",
@@ -30,27 +38,27 @@
     },
     {
       "templatePath": "./arquivos/models/resource.model.hbs",
-      "outputPath": "../dist/src/models/{{toCamelCase tableSchema.name}}.model.js",
-      "forEach": "tableSchemas",
-      "itemAlias": "tableSchema"
+      "outputPath": "../dist/src/models/{{toCamelCase resource.name}}.model.js",
+      "forEach": "apiResources",
+      "itemAlias": "resource"
     },
     {
       "templatePath": "./arquivos/services/resource.service.hbs",
-      "outputPath": "../dist/src/services/{{toCamelCase tableSchema.name}}.service.js",
-      "forEach": "tableSchemas",
-      "itemAlias": "tableSchema"
+      "outputPath": "../dist/src/services/{{toCamelCase resource.name}}.service.js",
+      "forEach": "apiResources",
+      "itemAlias": "resource"
     },
     {
       "templatePath": "./arquivos/controllers/resource.controller.hbs",
-      "outputPath": "../dist/src/controllers/{{toCamelCase tableSchema.name}}.controller.js",
-      "forEach": "tableSchemas",
-      "itemAlias": "tableSchema"
+      "outputPath": "../dist/src/controllers/{{toCamelCase resource.name}}.controller.js",
+      "forEach": "apiResources",
+      "itemAlias": "resource"
     },
     {
       "templatePath": "./arquivos/routers/resource.router.hbs",
-      "outputPath": "../dist/src/routers/{{toCamelCase tableSchema.name}}.router.js",
-      "forEach": "tableSchemas",
-      "itemAlias": "tableSchema"
+      "outputPath": "../dist/src/routers/{{toCamelCase resource.name}}.router.js",
+      "forEach": "apiResources",
+      "itemAlias": "resource"
     },
     {
       "templatePath": "./arquivos/apps/app.solid.hbs",

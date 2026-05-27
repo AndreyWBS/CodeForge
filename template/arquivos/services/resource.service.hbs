@@ -1,8 +1,15 @@
 import { BaseService } from './base.service.js';
-import { {{toPascalCase tableSchema.name}}Model } from '../models/{{toCamelCase tableSchema.name}}.model.js';
+import { {{toPascalCase resource.name}}Model } from '../models/{{toCamelCase resource.name}}.model.js';
 
-export class {{toPascalCase tableSchema.name}}Service extends BaseService {
-  constructor(model = new {{toPascalCase tableSchema.name}}Model()) {
+export class {{toPascalCase resource.name}}Service extends BaseService {
+  constructor(model = new {{toPascalCase resource.name}}Model()) {
     super(model);
   }
+
+{{#each resource.customRoutes}}
+  async {{handlerName}}(params, query, body) {
+    return this.model.{{handlerName}}(params, query, body);
+  }
+
+{{/each}}
 }

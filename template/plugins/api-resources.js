@@ -1,5 +1,3 @@
-import mysql from "mysql2/promise";
-
 const DEFAULT_CRUD_STEPS = ["list", "getById", "create", "update", "remove"];
 
 function toCamelCase(value) {
@@ -76,54 +74,12 @@ function buildApiResources(tableSchemas, projectConfig) {
     });
 }
 
-export default function (Handlebars) {
-  // helpers específicos de banco podem ser registrados aqui futuramente
+export default function () {
+  // Plugin de api-resources não registra helpers, apenas enriquece contexto.
 }
 
 export async function enrichContext(context, projectConfig) {
-  const dbConfig = projectConfig.database;
-
-  if (!dbConfig) {
-    console.warn(
-      "⚠️  db-mapper: nenhuma configuração de banco encontrada em codeForge.config.json",
-    );
-    return {};
-  }
-
-  let connection;
-  try {
-    connection = await mysql.createConnection(dbConfig);
-    const [rows] = await connection.query("SHOW TABLES");
-
-    const dbKey = `Tables_in_${dbConfig.database}`;
-    const tables = rows.map((row) => row[dbKey] ?? Object.values(row)[0]);
-    const tableSchemas = [];
-
-    for (const table of tables) {
-      const [columnsRows] = await connection.query(`SHOW COLUMNS FROM \`${table}\``);
-      const [primaryRows] = await connection.query(
-        `SHOW KEYS FROM \`${table}\` WHERE Key_name = 'PRIMARY'`,
-      );
-      const columns = columnsRows.map((column) => column.Field);
-      const primaryKey = primaryRows[0]?.Column_name ?? "id";
-      tableSchemas.push({
-        name: table,
-        primaryKey,
-        columns,
-      });
-    }
-
-    console.log("\n📋 Tabelas encontradas no banco de dados:");
-    tables.forEach((table) => console.log(`   - ${table}`));
-    console.log("");
-
-    const apiResources = buildApiResources(tableSchemas, projectConfig);
-
-    return { tables, tableSchemas, apiResources };
-  } catch (err) {
-    console.error(`❌ db-mapper: falha ao conectar no banco — ${err.message}`);
-    return {};
-  } finally {
-    if (connection) await connection.end();
-  }
+  const tableSchemas = Array.isArray(context.tableSchemas) ? context.tableSchemas : [];
+  const apiResources = buildApiResources(tableSchemas, projectConfig);
+  return { apiResources };
 }

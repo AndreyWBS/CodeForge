@@ -37,16 +37,20 @@ export class CodeForgeEngine {
       const configDir = path.dirname(path.resolve(configPath));
       const resolvedTemplateDir = templateDir ?? configDir;
       const resolvedOutputDir = outputDir ?? path.resolve(configDir, "../dist");
+      const configuredPlugins = Array.isArray(config.plugins) ? config.plugins : [];
 
       this.helperRegistry.register();
       await this.partialRegistry.register(configDir);
-      await this.dependencyInstaller.install(resolvedTemplateDir);
+      if (configuredPlugins.length > 0) {
+        await this.dependencyInstaller.install(resolvedTemplateDir);
+      }
       const enrichedContext = await this.pluginLoader.load(
         configDir,
         config.globalContext,
         projectConfig,
+        configuredPlugins,
       );
-      if (!keepPluginDependencies) {
+      if (!keepPluginDependencies && configuredPlugins.length > 0) {
         await this.dependencyInstaller.cleanup(resolvedTemplateDir);
       }
 
@@ -65,6 +69,13 @@ export class CodeForgeEngine {
   async generateFromFileDef(fileDef, configDir, baseContext) {
     if (fileDef.forEach) {
       const items = baseContext[fileDef.forEach];
+      if (items === undefined || items === null) {
+        console.log(
+          `⏭️ Pulando '${fileDef.templatePath}': contexto '${fileDef.forEach}' não foi fornecido`,
+        );
+        return;
+      }
+
       if (!Array.isArray(items)) {
         throw new Error(`forEach '${fileDef.forEach}' precisa ser um array no contexto`);
       }

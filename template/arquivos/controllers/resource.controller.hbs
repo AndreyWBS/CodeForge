@@ -1,15 +1,30 @@
-export class {{toPascalCase tableSchema.name}}Controller {
+export class {{toPascalCase resource.name}}Controller {
   constructor(service) {
     this.service = service;
   }
 
+{{#if resource.crud.list}}
 {{> controller-list-method}}
+{{/if}}
 
+{{#if resource.crud.getById}}
 {{> controller-get-by-id-method}}
+{{/if}}
 
+{{#if resource.crud.create}}
 {{> controller-create-method}}
+{{/if}}
 
+{{#if resource.crud.update}}
 {{> controller-update-method}}
+{{/if}}
 
+{{#if resource.crud.remove}}
 {{> controller-remove-method}}
+{{/if}}
+
+{{#each resource.customRoutes}}
+{{> controller-custom-method}}
+
+{{/each}}
 }

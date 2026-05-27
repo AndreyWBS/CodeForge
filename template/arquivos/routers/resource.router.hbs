@@ -1,13 +1,31 @@
 import { Router } from 'express';
-import { {{toPascalCase tableSchema.name}}Service } from '../services/{{toCamelCase tableSchema.name}}.service.js';
-import { {{toPascalCase tableSchema.name}}Controller } from '../controllers/{{toCamelCase tableSchema.name}}.controller.js';
+import { {{toPascalCase resource.name}}Service } from '../services/{{toCamelCase resource.name}}.service.js';
+import { {{toPascalCase resource.name}}Controller } from '../controllers/{{toCamelCase resource.name}}.controller.js';
 
-export function create{{toPascalCase tableSchema.name}}Router() {
+export function create{{toPascalCase resource.name}}Router() {
   const router = Router();
-  const service = new {{toPascalCase tableSchema.name}}Service();
-  const controller = new {{toPascalCase tableSchema.name}}Controller(service);
+  const service = new {{toPascalCase resource.name}}Service();
+  const controller = new {{toPascalCase resource.name}}Controller(service);
 
-{{> router-crud-routes}}
+{{#if resource.crud.list}}
+  router.get('/', (req, res, next) => controller.list(req, res, next));
+{{/if}}
+{{#if resource.crud.getById}}
+  router.get('/:id', (req, res, next) => controller.getById(req, res, next));
+{{/if}}
+{{#if resource.crud.create}}
+  router.post('/', (req, res, next) => controller.create(req, res, next));
+{{/if}}
+{{#if resource.crud.update}}
+  router.put('/:id', (req, res, next) => controller.update(req, res, next));
+{{/if}}
+{{#if resource.crud.remove}}
+  router.delete('/:id', (req, res, next) => controller.remove(req, res, next));
+{{/if}}
+
+{{#each resource.customRoutes}}
+{{> router-custom-route}}
+{{/each}}
 
   return router;
 }
